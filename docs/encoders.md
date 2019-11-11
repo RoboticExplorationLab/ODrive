@@ -40,8 +40,14 @@ Below are the steps to do the one-time calibration and configuration. Note that 
 
 That's it, now on every reboot the motor will turn in one direction until it finds the encoder index.
 
-* If you wish to scan for the index pulse in the other direction, that feature is currently undocumented.
 * If your motor has problems reaching the index location due to the mechanical load, you can increase `<axis>.motor.config.calibration_current`.
+
+### Reversing index search
+Sometimes you would like the index search to only happen in a particular direction (the reverse of the default), instead of swapping the motor leads, you can ensure the following three values are negative:
+* `<axis0>.config.calibration_lockin.vel`
+* `<axis0>.config.calibration_lockin.accel`
+* `<axis0>.config.calibration_lockin.ramp_distance`
+
 
 *IMPORTANT:* Your motor should find the same rotational position when the ODrive performs an index search if the index signal is working properly. This means that the motor should spin, and stop at the same position if you have set <axis>.config.startup_encoder_index_search so the search starts on reboot, or you if call the command:<axis>.requested_state = AXIS_STATE_ENCODER_INDEX_SEARCH after reboot. You can test this. Send the reboot() command, and while it's rebooting turn your motor, then make sure the motor returns back to the correct position each time when it comes out of reboot. Try this procedure a couple of times to be sure. 
 
@@ -115,13 +121,13 @@ Connect to the I pin, see if you get a pulse on a complete rotation. Sometimes t
 If you are using SPI, have a lot at the signal on the CLK, and CS pins. There are many examples on the net for how these should behave. 
 
 ## Encoder Noise
-Noise is found in all circuits, life is just about figuring out if it is preventing your system from working. Lots of users have no problems with noise interferring with their odrive operation, others will tell you "_I've been using the same encoder as you with no problems_". Power to 'em, that may be true, but it doesn't mean it will work for you. If you are concerned about noise, there are several possible sources:
+Noise is found in all circuits, life is just about figuring out if it is preventing your system from working. Lots of users have no problems with noise interfering with their odrive operation, others will tell you "_I've been using the same encoder as you with no problems_". Power to 'em, that may be true, but it doesn't mean it will work for you. If you are concerned about noise, there are several possible sources:
 
 * Importantly, encoder wires may be too close to motor wires, avoid overlap as much as possible
 * Long wires between encoder and ODrive
 * Use of ribbon cable
 
-The following _might_ mitigate noise problems. Use shielded cable, or use twisted pairs, where one side of each twisted pair is tied to ground, the other side is tied to your signal. If you are using SPI, use a 20-50 ohm resistor in series on CLK, which is more susceptable noise.
+The following _might_ mitigate noise problems. Use shielded cable, or use twisted pairs, where one side of each twisted pair is tied to ground, the other side is tied to your signal. If you are using SPI, use a 20-50 ohm resistor in series on CLK, which is more susceptible noise.
 
 If you are using an encoder with an index signal, another problem that has been encountered is with noise on the Z input of ODrive. Symptoms for this problem include:
 * difficulty with requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE, where your calibration sequence may not complete
@@ -130,7 +136,7 @@ If you are using an encoder with an index signal, another problem that has been 
 One easy step that _might_ fix the noise on the Z input has been to solder a 22nF-47nF capacitor to the Z pin and the GND pin on the underside of the ODrive board. 
 
 ## AS5047/AS5048 Encoders
-The AS5047/AS5048 encoders are Hall Effect/Magenetic sensors that can serve as rotary encoders for the ODrive.
+The AS5047/AS5048 encoders are Hall Effect/Magnetic sensors that can serve as rotary encoders for the ODrive.
 
 The AS5047 has 3 independent output interfaces: SPI, ABI, and PWM. 
 The AS5048 has 4 independent output interfaces: SPI, ABI, I2C, and PWM.
