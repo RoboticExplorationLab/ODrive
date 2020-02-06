@@ -115,6 +115,9 @@ public:
       return axes[0]->encoder_.pos_estimate_;
     }
     encoder_measurements_t get_encoders_struct(current_command_t current_cmd){
+        axes[0]->watchdog_feed();
+        axes[1]->watchdog_feed();
+        
         axes[0]->controller_.set_current_setpoint(current_cmd.current_axis0);
         axes[1]->controller_.set_current_setpoint(current_cmd.current_axis1);
 
